@@ -1,32 +1,39 @@
+'use server'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '')
 
 export async function POST() {
 
-  const price = await stripe.prices.create({
-    currency: 'usd',
-    unit_amount: 1000,
-    product_data: {
-      name: 'Gold Plan',
-    },
-  });
-
-  console.log(">>>price", price)
+  // const price = await stripe.prices.create({
+  //   currency: 'usd',
+  //   unit_amount: 1000,
+  //   product_data: {
+  //     name: 'Gold Plan',
+  //   },
+  // });
 
   const params = {
     mode: 'payment',
     line_items: [
       {
-        price: price.id,
-        quantity: 10
+        price_data: {
+          currency: 'brl',
+          product_data: {
+            name: 'This is my new product',
+          },
+          //Price in cents
+          unit_amount: 1000,
+        },
+        //Quantity of the product
+        quantity: 3,
       },
     ],
     success_url: `http://localhost:3000/checkout/success`,
     cancel_url: `http://localhost:3000/checkout/error`,
   };
 
-  //@ts-expect-error - I'm not sure why this is throwing an error
+  //@ts-expect-error - This is a valid call
   const session = await stripe.checkout.sessions.create(params)
   return Response.json(session)
 }
