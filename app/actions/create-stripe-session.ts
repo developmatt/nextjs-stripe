@@ -3,16 +3,7 @@ import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '')
 
-export async function POST() {
-
-  // const price = await stripe.prices.create({
-  //   currency: 'usd',
-  //   unit_amount: 1000,
-  //   product_data: {
-  //     name: 'Gold Plan',
-  //   },
-  // });
-
+export async function createStripeSession() {
   const params = {
     mode: 'payment',
     line_items: [
@@ -35,5 +26,5 @@ export async function POST() {
 
   //@ts-expect-error - This is a valid call
   const session = await stripe.checkout.sessions.create(params)
-  return Response.json(session)
+  return JSON.stringify(session)
 }

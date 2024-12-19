@@ -1,18 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { createStripeSession } from "../actions/create-stripe-session";
 
 export default function Page() {
   const router = useRouter();
 
   const handleClick = async () => {
-    const checkoutSession = await fetch("/api/checkout_sessions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount: 200 }),
-    }).then((res) => res.json());
-
+    const checkoutSession = await createStripeSession().then((res) => JSON.parse(res));
     router.replace(checkoutSession.url);
   };
   return (
